@@ -1,29 +1,25 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const app = require('express')();
 
-admin.initializeApp({
-    credential: admin.credential.cert(require('../keys/admin.json'))
-})
+const { db } = require('./util/admin')
+const config = require('./util/config')
 
-const config = {
-    apiKey: "AIzaSyC3JbrptNnwPPAGzNugOuZ0A2r82ZSPpnM",
-    authDomain: "metropos-4c5ed.firebaseapp.com",
-    databaseURL: "https://metropos-4c5ed.firebaseio.com",
-    projectId: "metropos-4c5ed",
-    storageBucket: "metropos-4c5ed.appspot.com",
-    messagingSenderId: "754533303452",
-    appId: "1:754533303452:web:4ce1b70f43a1141d531959",
-    measurementId: "G-HRMYCH6CXY"
-}
+const { createNewEmployee } = require('./handlers/users')
 
-const firebase = require('firebase')
-firebase.initializeApp(config)
-const db = admin.firestore();
+// const config = 
+
+// const firebase = require('firebase')
+// firebase.initializeApp(config)
 
 
+// Employee routes
+app.post('/newEmployee', createNewEmployee);
 
     
+
+
+
+// This is not in use
 app.post('/post', (req, res) => {
     console.log(req.data);
     db.collection('posts')
@@ -33,29 +29,7 @@ app.post('/post', (req, res) => {
         })
         .catch(err => console.log(err))
 })
-
-
-//Create new employee
-app.post('/createNewEmployee', (req, res) => {
-    // Here goes logic for validation
-
-    const newEmployee = {
-        name: req.body.name,
-        lastName: req.body.lastName,
-        dateOfBirth: req.body.dateOfBirth,
-        createdAt: new Date().toISOString(),
-        userID: req.body.userID
-    }
-    console.log(newEmployee)
-
-    db.collection('employees')
-        .add(newEmployee)
-        .then(doc => {
-            res.json({message: `User id ${newEmployee.userID}, was created with document ID of ${doc.id} !`})
-        })
-       .catch(err => console.log(err))
-})
-
+// Unti here 
 
 
 exports.api = functions.https.onRequest(app)
