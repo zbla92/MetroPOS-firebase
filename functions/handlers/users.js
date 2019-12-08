@@ -2,7 +2,7 @@ const { db, admin } = require('../util/admin');
 
 const { validateNewEmployee } = require('../util/validators') 
 
-
+// Create new employee
 exports.createNewEmployee = (req, res) => {
     const newEmployee = {
         name: req.body.name,
@@ -20,10 +20,37 @@ exports.createNewEmployee = (req, res) => {
        // Here goes logic for validation
     console.log(newEmployee)
 
-    db.collection('employees')
-        .add(newEmployee)
-        .then(doc => {
-            res.json({message: `User id ${newEmployee.userID}, was created with document ID of ${doc.id} !`})
-        })
-       .catch(err => console.log(err))
+    db.doc(`/employees/${newEmployee.userID}`)
+    .get()
+    .then(doc => {
+        if(doc.exists){
+            return res.status(400).json({ userID: `This user ID is already taken` })
+        } else {
+            db.collection('employees').doc(newEmployee.userID)
+            .set(newEmployee)
+            .then(doc => {
+                res.json({message: `Employee with ID: ${newEmployee.userID}, was created with document ID of ${doc.id} !`})
+            })
+           .catch(err => console.log(err))
+        }
+    })
 }
+
+
+// Get Employee
+exports.employeeLogIn = (req, res) => {
+    console.log(req.params.userID)
+    let userData = {};
+    db.doc(`/employees/${req.body.userID}`)
+        .get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({error: 'User not found!'})
+            }
+            userData = doc.data();
+            return res.json(userData)
+        })
+        .catch(err => console.log(err))
+}
+
+// Delete User 

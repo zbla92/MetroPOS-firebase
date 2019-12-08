@@ -4,7 +4,7 @@ const app = require('express')();
 const { db } = require('./util/admin')
 const config = require('./util/config')
 
-const { createNewEmployee } = require('./handlers/users')
+const { createNewEmployee, employeeLogIn } = require('./handlers/users')
 
 // const config = 
 
@@ -14,7 +14,7 @@ const { createNewEmployee } = require('./handlers/users')
 
 // Employee routes
 app.post('/newEmployee', createNewEmployee);
-
+app.get('/logIn', employeeLogIn );
     
 
 
