@@ -4,33 +4,14 @@ const app = require('express')();
 const { db } = require('./util/admin')
 const config = require('./util/config')
 
-const { createNewEmployee, employeeLogIn } = require('./handlers/users')
-
-// const config = 
-
-// const firebase = require('firebase')
-// firebase.initializeApp(config)
+const { createNewEmployee, employeeLogIn, deleteEmployee } = require('./handlers/employees')
 
 
 // Employee routes
 app.post('/newEmployee', createNewEmployee);
-app.get('/logIn', employeeLogIn );
-    
+app.get('/logIn/:userID', employeeLogIn );
+app.delete('/employee/:userID', deleteEmployee);
 
 
-
-// This is not in use
-app.post('/post', (req, res) => {
-    console.log(req.data);
-    db.collection('posts')
-        .add(req.body)
-        .then(doc => {
-            res.json({message: 'all is good'})
-        })
-        .catch(err => console.log(err))
-})
-// Unti here 
-
-
-exports.api = functions.https.onRequest(app)
+exports.api = functions.region('europe-west2').https.onRequest(app)
 

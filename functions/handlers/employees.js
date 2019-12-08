@@ -41,7 +41,7 @@ exports.createNewEmployee = (req, res) => {
 exports.employeeLogIn = (req, res) => {
     console.log(req.params.userID)
     let userData = {};
-    db.doc(`/employees/${req.body.userID}`)
+    db.doc(`/employees/${req.params.userID}`)
         .get()
         .then(doc => {
             if(!doc.exists){
@@ -54,3 +54,21 @@ exports.employeeLogIn = (req, res) => {
 }
 
 // Delete User 
+exports.deleteEmployee = (req, res) => {
+    const document = db.doc(`/employees/${req.params.userID}`);
+    document.get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(400).json({ error: "Employee not found" });
+            } else {
+                return document.delete()
+            }
+        })
+        .then(() => {
+            res.json({ message: `Deleted user ${req.params.userID} sucessfully!`})
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(500).json({ error: err.code})
+        })
+}
