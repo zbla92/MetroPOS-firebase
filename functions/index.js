@@ -12,6 +12,8 @@ app.post('/newEmployee', createNewEmployee);
 app.get('/logIn/:userID', employeeLogIn );
 app.delete('/employee/:userID', deleteEmployee);
 
+// Items routes
+
 
 exports.api = functions.region('europe-west2').https.onRequest(app)
 
